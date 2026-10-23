@@ -12,7 +12,6 @@ import { Sparkle20Filled } from "@fluentui/react-icons";
 export default function SeccionInicio({ onBookClick }) {
   return (
     <section className="hero-stage section-wrap" id="inicio">
-      {/* TEXTO CENTRADO SIN RECUADRO PESADO PARA APRECIAR LOS PINCELES DE FONDO */}
       <div className="hero-copy hero-open-center">
         <Badge
           appearance="outline"

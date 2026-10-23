@@ -33,7 +33,6 @@ export default function SeccionResenas({ onBookClick }) {
           Cada visita a Lumière Studio es un momento dedicado a tu belleza y bienestar. Descubre las experiencias de nuestras clientas y déjate inspirar por sus diseños, acabados y momentos de relajación.
         </Body1>
 
-        {/* Resumen global de calificación */}
         <div className="reviews-summary-pill">
           <span className="summary-stars" aria-label="5 de 5 estrellas">★★★★★</span>
           <Text className="summary-score">4.9 / 5.0</Text>

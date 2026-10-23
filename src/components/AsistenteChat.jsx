@@ -135,7 +135,6 @@ export default function AsistenteChat() {
         { id: nuevoId(), emisor: "bot", texto: textoIA },
       ]);
     } catch {
-      // Respaldo instantáneo si falla la red o el servicio externo de IA
       setMensajes((prev) => [
         ...prev,
         { id: nuevoId(), emisor: "bot", texto: respuestaDeRespaldo(limpio) },

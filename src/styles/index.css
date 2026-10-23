@@ -7,7 +7,6 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
-  /* Paleta principal: plateado & cromo líquido */
   --silver-pure: #FFFFFF;
   --silver-bright: #F1F5F9;
   --silver-chrome: #CBD5E1;
@@ -15,7 +14,6 @@
   --silver-deep: #475569;
   --obsidian-slate: #0F172A;
 
-  /* Derivados tornasol con brillo plateado: azul y verde menta */
   --tornasol-blue: #93C5FD;
   --tornasol-blue-deep: #2563EB;
   --tornasol-mint: #86EFAC;
@@ -42,9 +40,6 @@ button, a {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ==========================================
-   1. SHELL & DOBLE FONDO DE VIDEO CON TRANSICIÓN AL BAJAR (SCROLL)
-   ========================================== */
 .site-shell {
   position: relative;
   isolation: isolate;
@@ -95,7 +90,6 @@ button, a {
   mix-blend-mode: soft-light;
 }
 
-/* Destellos de plata con reflejo tornasol azul */
 .floating-sparkle {
   position: absolute;
   display: block;
@@ -134,9 +128,6 @@ button, a {
   }
 }
 
-/* ==========================================
-   2. BARRA DE NAVEGACIÓN (LOGO + SERVICIOS + RESERVAS)
-   ========================================== */
 .navbar {
   position: sticky;
   top: 0;
@@ -233,9 +224,6 @@ button, a {
   color: #1E293B !important;
 }
 
-/* ==========================================
-   3. BOTONES FLUENT UI CON RESPLANDOR DE ESPEJO PLATEADO
-   ========================================== */
 .site-shell .fui-Button,
 .luxury-btn {
   position: relative;
@@ -272,7 +260,6 @@ button, a {
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1) !important;
 }
 
-/* Destello de espejo plateado puro al pasar el mouse */
 .site-shell .fui-Button::after,
 .luxury-btn::after {
   content: "";
@@ -310,9 +297,6 @@ button, a {
   filter: brightness(1.06);
 }
 
-/* ==========================================
-   4. INICIO: TEXTO CENTRADO SIN RECUADRO QUE TAPE EL VIDEO
-   ========================================== */
 .section-wrap {
   width: min(1180px, 90%);
   margin: 0 auto;
@@ -394,7 +378,6 @@ button, a {
     0 3px 10px rgba(15, 23, 42, 0.22);
 }
 
-/* Shimmer plateado con destellos tornasol azul y verde menta */
 .shimmer-headline,
 .shimmer-inline {
   font-family: "Cormorant Garamond", serif !important;
@@ -509,9 +492,6 @@ button, a {
   height: 32px !important;
 }
 
-/* ==========================================
-   5. RESEÑAS DE CLIENTAS (FLUENT UI)
-   ========================================== */
 .reviews-section {
   position: relative;
   z-index: 3;
@@ -709,9 +689,6 @@ button, a {
   margin-top: 38px;
 }
 
-/* ==========================================
-   6. PIE DE PÁGINA (RESERVAS + UBICACIÓN, HORARIOS Y CONTACTO)
-   ========================================== */
 .footer-contact-wrap {
   position: relative;
   z-index: 3;
@@ -939,9 +916,6 @@ button, a {
   color: #475569;
 }
 
-/* ==========================================
-   7. WIDGET FLOTANTE DE CHATBOT CON IA (FLUENT UI)
-   ========================================== */
 .chatbot-floating-container {
   position: fixed;
   bottom: 24px;
@@ -1151,9 +1125,6 @@ button, a {
     0 0 22px rgba(255, 255, 255, 0.85) !important;
 }
 
-/* ==========================================
-   8. RESPONSIVE
-   ========================================== */
 @media (max-width: 1080px) {
   .reviews-grid {
     grid-template-columns: 1fr;

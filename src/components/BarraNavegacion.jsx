@@ -3,7 +3,6 @@ import { CalendarLtr24Regular } from "@fluentui/react-icons";
 
 export default function BarraNavegacion({ onBookClick }) {
   const irAServicios = () => {
-    // Pendiente: conectar con la página de servicios cuando esté lista
     console.log("Navegar a Servicios");
   };
 

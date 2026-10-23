@@ -22,7 +22,6 @@ export default function PiePagina({ onBookClick }) {
   return (
     <footer className="footer-contact-wrap" id="contacto">
       <div className="footer-inner section-wrap">
-        {/* CUADRO DE RESERVAS SUPERIOR JUNTO A LOS BOTONES */}
         <div className="contact-hero-banner">
           <div className="contact-banner-copy">
             <Badge
@@ -66,7 +65,6 @@ export default function PiePagina({ onBookClick }) {
           </div>
         </div>
 
-        {/* PIE DE PÁGINA ABIERTO (SIN CARDS) */}
         <div className="footer-open-grid">
           <div className="footer-col footer-col-brand">
             <div className="footer-brand-header">

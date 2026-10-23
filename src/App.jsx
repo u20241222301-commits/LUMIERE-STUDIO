@@ -16,23 +16,18 @@ export default function App() {
   return (
     <FluentProvider theme={customLuxuryTheme}>
       <div className="site-shell">
-        {/* Doble fondo de video dinámico con transición suave al hacer scroll */}
         <FondoAmbiental />
 
-        {/* Barra de navegación con efecto de resplandor al pasar el mouse */}
         <BarraNavegacion onBookClick={() => handleBookClick()} />
 
-        {/* Contenido completo del Index */}
         <main>
           <SeccionInicio onBookClick={handleBookClick} />
 
           <SeccionResenas onBookClick={handleBookClick} />
         </main>
 
-        {/* Pie de página tradicional con reservas, redes sociales, correo y ubicación */}
         <PiePagina onBookClick={handleBookClick} />
 
-        {/* Widget flotante con API de Chatbot IA Concierge */}
         <AsistenteChat />
       </div>
     </FluentProvider>

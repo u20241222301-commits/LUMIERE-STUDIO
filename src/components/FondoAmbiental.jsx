@@ -12,7 +12,6 @@ export default function FondoAmbiental() {
       const rect = seccionResenas.getBoundingClientRect();
       const alto = window.innerHeight || 800;
 
-      // La transición inicia cuando la sección de reseñas entra en pantalla al bajar con el mouse
       const inicio = alto * 0.9;
       const fin = alto * 0.25;
       const progreso = (inicio - rect.top) / (inicio - fin);
@@ -31,7 +30,6 @@ export default function FondoAmbiental() {
 
   return (
     <div className="luxury-ambient-bg" aria-hidden="true">
-      {/* FONDO 1 (INICIO): pinceles vertiendo esmalte plateado */}
       <video
         className="ambient-video-bg"
         src="/fondo-pinceles.mp4"
@@ -46,7 +44,6 @@ export default function FondoAmbiental() {
         }}
       />
 
-      {/* FONDO 2 (AL BAJAR A LAS RESEÑAS): mano con cristales y frasco Lumière */}
       <video
         className="ambient-video-bg"
         src="/fondo-lumiere.mp4"
@@ -61,10 +58,8 @@ export default function FondoAmbiental() {
         }}
       />
 
-      {/* Velo iridiscente muy ligero para armonizar ambos videos */}
       <div className="video-iridescent-veil" />
 
-      {/* Destellos de cristal plateado */}
       {sparkles.map((destello) => (
         <span
           key={destello.id}

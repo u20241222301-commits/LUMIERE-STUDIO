@@ -22,7 +22,6 @@ export const studioInfo = {
     { days: "Sábados", time: "9:00 AM – 7:00 PM" },
     { days: "Domingos & Festivos", time: "10:00 AM – 5:00 PM (con cita)" },
   ],
-  // Agrega aquí la URL real de cada red social para que aparezca en el pie de página.
   socials: [
     { name: "Instagram", url: "" },
     { name: "TikTok", url: "" },
