@@ -1,0 +1,1183 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: #0F172A;
+  background: #E2E8F0;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  /* Paleta principal: plateado & cromo líquido */
+  --silver-pure: #FFFFFF;
+  --silver-bright: #F1F5F9;
+  --silver-chrome: #CBD5E1;
+  --silver-metallic: #94A3B8;
+  --silver-deep: #475569;
+  --obsidian-slate: #0F172A;
+
+  /* Derivados tornasol con brillo plateado: azul y verde menta */
+  --tornasol-blue: #93C5FD;
+  --tornasol-blue-deep: #2563EB;
+  --tornasol-mint: #86EFAC;
+  --tornasol-mint-deep: #059669;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+body {
+  margin: 0;
+  background: #E2E8F0;
+  color: var(--obsidian-slate);
+  overflow-x: hidden;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ==========================================
+   1. SHELL & DOBLE FONDO DE VIDEO CON TRANSICIÓN AL BAJAR (SCROLL)
+   ========================================== */
+.site-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.luxury-ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background: #E2E8F0;
+}
+
+.ambient-video-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  will-change: opacity, transform, filter;
+  transition:
+    opacity 0.22s ease-out,
+    transform 0.32s ease-out,
+    filter 0.32s ease-out;
+}
+
+.video-iridescent-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(226, 232, 240, 0.1) 60%,
+      rgba(15, 23, 42, 0.14) 100%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(147, 197, 253, 0.12) 0%,
+      rgba(226, 232, 240, 0.12) 50%,
+      rgba(134, 239, 172, 0.1) 100%
+    );
+  mix-blend-mode: soft-light;
+}
+
+/* Destellos de plata con reflejo tornasol azul */
+.floating-sparkle {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    #FFFFFF 0%,
+    #F8FAFC 38%,
+    rgba(147, 197, 253, 0.65) 60%,
+    rgba(147, 197, 253, 0) 76%
+  );
+  clip-path: polygon(
+    50% 0%,
+    61% 39%,
+    100% 50%,
+    61% 61%,
+    50% 100%,
+    39% 61%,
+    0% 50%,
+    39% 39%
+  );
+  animation: sparkleTwinkle ease-in-out infinite;
+  filter:
+    drop-shadow(0 0 10px rgba(255, 255, 255, 0.98))
+    drop-shadow(0 0 16px rgba(147, 197, 253, 0.75));
+}
+
+@keyframes sparkleTwinkle {
+  0%, 100% {
+    opacity: 0.18;
+    transform: translateY(0) scale(0.45) rotate(0deg);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translateY(-22px) scale(1.25) rotate(90deg);
+  }
+}
+
+/* ==========================================
+   2. BARRA DE NAVEGACIÓN (LOGO + SERVICIOS + RESERVAS)
+   ========================================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 12px 6%;
+  background: rgba(248, 250, 252, 0.72);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 32px rgba(71, 85, 105, 0.08);
+  transition:
+    background 0.45s ease,
+    box-shadow 0.45s ease,
+    border-color 0.45s ease;
+}
+
+.navbar:hover {
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom-color: rgba(147, 197, 253, 0.8);
+  box-shadow:
+    0 14px 42px rgba(148, 163, 184, 0.25),
+    0 0 28px rgba(255, 255, 255, 0.9),
+    0 0 38px rgba(147, 197, 253, 0.3);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: var(--obsidian-slate);
+  flex-shrink: 0;
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.brand:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 14px rgba(147, 197, 253, 0.7));
+}
+
+.brand-logo-img {
+  height: 54px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #334155 0%, #E2E8F0 42%, #93C5FD 78%, #86EFAC 100%);
+  color: #0F172A;
+  border: 1.5px solid #FFFFFF;
+  box-shadow:
+    0 0 18px rgba(203, 213, 225, 0.85),
+    0 0 12px rgba(147, 197, 253, 0.6);
+  animation: nailIconFloat 4s ease-in-out infinite;
+}
+
+@keyframes nailIconFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(10deg); }
+}
+
+.brand-title-text {
+  display: block;
+  font-family: "Cinzel", serif !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: 4px;
+  line-height: 1.15 !important;
+  color: var(--obsidian-slate);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-service-btn {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.8px !important;
+  text-transform: uppercase;
+  color: #1E293B !important;
+}
+
+/* ==========================================
+   3. BOTONES FLUENT UI CON RESPLANDOR DE ESPEJO PLATEADO
+   ========================================== */
+.site-shell .fui-Button,
+.luxury-btn {
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 1.2px !important;
+  font-weight: 600 !important;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease,
+    border-color 0.35s ease,
+    filter 0.35s ease !important;
+}
+
+.primary-glow-btn {
+  background: linear-gradient(
+    135deg,
+    #1E293B 0%,
+    #334155 38%,
+    #64748B 68%,
+    #1E293B 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  color: #FFFFFF !important;
+  box-shadow:
+    0 10px 26px rgba(15, 23, 42, 0.28),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+}
+
+.outline-glow-btn {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border: 1px solid rgba(203, 213, 225, 0.95) !important;
+  color: #0F172A !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Destello de espejo plateado puro al pasar el mouse */
+.site-shell .fui-Button::after,
+.luxury-btn::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -130%;
+  width: 60%;
+  height: 220%;
+  pointer-events: none;
+  transform: skewX(-25deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.98),
+    rgba(226, 232, 240, 0.85),
+    transparent
+  );
+  transition: left 0.7s ease;
+}
+
+.site-shell .fui-Button:hover::after,
+.luxury-btn:hover::after {
+  left: 155%;
+}
+
+.site-shell .fui-Button:hover,
+.luxury-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: #FFFFFF !important;
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.28),
+    0 0 22px rgba(255, 255, 255, 0.95),
+    0 0 38px rgba(203, 213, 225, 0.85),
+    inset 0 0 12px rgba(255, 255, 255, 0.65) !important;
+  filter: brightness(1.06);
+}
+
+/* ==========================================
+   4. INICIO: TEXTO CENTRADO SIN RECUADRO QUE TAPE EL VIDEO
+   ========================================== */
+.section-wrap {
+  width: min(1180px, 90%);
+  margin: 0 auto;
+}
+
+.hero-stage {
+  min-height: calc(100vh - 84px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: center;
+  padding-top: 22vh;
+  padding-bottom: 56px;
+}
+
+.hero-open-center {
+  position: relative;
+  z-index: 4;
+  max-width: 980px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.14) 52%,
+    transparent 76%
+  );
+}
+
+.luxury-kicker-pill {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 10px 22px !important;
+  height: auto !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2.4px;
+  color: #0F172A !important;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(241, 245, 249, 0.85) 50%,
+    rgba(219, 234, 254, 0.8) 100%
+  ) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.7) !important;
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.1),
+    0 0 18px rgba(147, 197, 253, 0.3);
+}
+
+.sparkle-dot {
+  color: #475569;
+  filter: drop-shadow(0 0 6px rgba(147, 197, 253, 0.95));
+}
+
+.hero-title {
+  display: block !important;
+  margin: 0 0 18px !important;
+  font-family: "Cinzel", serif !important;
+  font-size: clamp(40px, 4.8vw, 66px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: 2px;
+  color: #0F172A;
+  text-align: center !important;
+  text-wrap: balance;
+  text-shadow:
+    0 0 28px rgba(255, 255, 255, 1),
+    0 0 14px rgba(255, 255, 255, 0.98),
+    0 3px 10px rgba(15, 23, 42, 0.22);
+}
+
+/* Shimmer plateado con destellos tornasol azul y verde menta */
+.shimmer-headline,
+.shimmer-inline {
+  font-family: "Cormorant Garamond", serif !important;
+  font-style: italic;
+  font-weight: 700;
+  background: linear-gradient(
+    110deg,
+    #1E293B 0%,
+    #475569 14%,
+    #1D4ED8 28%,
+    #64748B 42%,
+    #047857 56%,
+    #475569 70%,
+    #1D4ED8 84%,
+    #1E293B 100%
+  );
+  background-size: 260% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter:
+    drop-shadow(0 0 18px rgba(255, 255, 255, 0.98))
+    drop-shadow(0 4px 14px rgba(255, 255, 255, 0.9));
+  animation: luxuryTitleShimmer 8s linear infinite;
+}
+
+.shimmer-headline {
+  display: block !important;
+  margin-top: 6px;
+  font-size: clamp(54px, 6.8vw, 86px) !important;
+}
+
+.shimmer-inline {
+  font-size: clamp(36px, 4.4vw, 54px) !important;
+  padding: 0 6px;
+}
+
+@keyframes luxuryTitleShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 260% center; }
+}
+
+.hero-description {
+  display: block !important;
+  max-width: 650px;
+  margin: 0 auto 28px !important;
+  color: #0F172A;
+  font-size: 16.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.8 !important;
+  text-align: center !important;
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 1),
+    0 0 10px rgba(255, 255, 255, 0.98),
+    0 1px 4px rgba(255, 255, 255, 0.95);
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.hero-fluent-divider {
+  width: min(560px, 85%) !important;
+  margin: 26px auto 20px !important;
+  opacity: 0.65;
+}
+
+.hero-metrics {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 26px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  box-shadow: 0 0 22px rgba(147, 197, 253, 0.25);
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.metric-number {
+  font-family: "Cinzel", serif !important;
+  font-size: 19px !important;
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #0F172A 0%, #475569 55%, #2563EB 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent !important;
+  letter-spacing: 1.4px;
+  margin: 0 0 2px !important;
+}
+
+.metric-label {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #334155;
+}
+
+.metric-divider {
+  height: 32px !important;
+}
+
+/* ==========================================
+   5. RESEÑAS DE CLIENTAS (FLUENT UI)
+   ========================================== */
+.reviews-section {
+  position: relative;
+  z-index: 3;
+  padding: 90px 0 80px;
+}
+
+.reviews-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+.section-main-title {
+  display: block !important;
+  text-align: center !important;
+  font-family: "Cinzel", serif !important;
+  font-size: clamp(32px, 4.2vw, 50px) !important;
+  line-height: 1.15 !important;
+  color: #0F172A !important;
+  margin: 0 0 16px !important;
+  text-shadow:
+    0 0 24px rgba(255, 255, 255, 1),
+    0 2px 10px rgba(255, 255, 255, 0.95);
+}
+
+.reviews-subtitle {
+  display: block !important;
+  text-align: center !important;
+  max-width: 660px;
+  font-size: 15.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.75 !important;
+  color: #0F172A;
+  margin-bottom: 22px;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 1);
+}
+
+.reviews-summary-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(241, 245, 249, 0.88) 55%,
+    rgba(219, 234, 254, 0.85) 100%
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(203, 213, 225, 0.95);
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.1),
+    0 0 20px rgba(147, 197, 253, 0.28);
+}
+
+.summary-stars {
+  color: #475569;
+  font-size: 16px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(147, 197, 253, 0.9);
+}
+
+.summary-score {
+  font-family: "Cinzel", serif !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  color: #0F172A;
+}
+
+.summary-divider {
+  height: 20px !important;
+}
+
+.summary-count {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #475569;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.review-glass-panel {
+  position: relative;
+  padding: 28px 24px;
+  border-radius: 28px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(248, 250, 252, 0.7) 60%,
+    rgba(239, 246, 255, 0.74) 100%
+  );
+  backdrop-filter: blur(16px) saturate(175%);
+  -webkit-backdrop-filter: blur(16px) saturate(175%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 18px 42px rgba(15, 23, 42, 0.12),
+    0 0 24px rgba(147, 197, 253, 0.22);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.review-glass-panel:hover {
+  transform: translateY(-6px);
+  border-color: #FFFFFF;
+  box-shadow:
+    0 24px 50px rgba(15, 23, 42, 0.16),
+    0 0 30px rgba(255, 255, 255, 0.95),
+    0 0 42px rgba(147, 197, 253, 0.4);
+}
+
+.review-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.review-stars {
+  font-size: 15px;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #475569, #2563EB, #059669);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 6px rgba(147, 197, 253, 0.6));
+}
+
+.review-service-badge {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, rgba(241, 245, 249, 0.95), rgba(219, 234, 254, 0.9)) !important;
+  color: #1E3A5F !important;
+  border: 1px solid rgba(148, 163, 184, 0.7) !important;
+}
+
+.review-comment {
+  display: block !important;
+  font-size: 14px !important;
+  line-height: 1.75 !important;
+  color: #1E293B;
+  font-style: italic;
+  margin-bottom: 18px;
+}
+
+.review-divider {
+  margin-bottom: 16px !important;
+  opacity: 0.55;
+}
+
+.review-author-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-tornasol-ring {
+  padding: 2.5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F1F5F9, #93C5FD, #86EFAC);
+  box-shadow: 0 0 14px rgba(147, 197, 253, 0.6);
+}
+
+.review-author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-author-name {
+  font-family: "Cinzel", serif !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  color: #0F172A !important;
+  margin: 0 !important;
+}
+
+.review-author-role {
+  font-size: 11.5px !important;
+  color: #475569;
+}
+
+.reviews-cta-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 38px;
+}
+
+/* ==========================================
+   6. PIE DE PÁGINA (RESERVAS + UBICACIÓN, HORARIOS Y CONTACTO)
+   ========================================== */
+.footer-contact-wrap {
+  position: relative;
+  z-index: 3;
+  margin-top: 30px;
+  padding: 58px 0 96px;
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 252, 0.86) 0%,
+    rgba(241, 245, 249, 0.96) 55%,
+    rgba(238, 242, 249, 0.98) 100%
+  );
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border-top: 1px solid rgba(203, 213, 225, 0.85);
+  box-shadow: 0 -16px 48px rgba(15, 23, 42, 0.08);
+}
+
+.contact-hero-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding: 34px 38px;
+  border-radius: 30px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(248, 250, 252, 0.88) 55%,
+    rgba(239, 246, 255, 0.88) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 18px 44px rgba(15, 23, 42, 0.1),
+    0 0 28px rgba(203, 213, 225, 0.5);
+  margin-bottom: 48px;
+}
+
+.contact-banner-copy {
+  max-width: 620px;
+}
+
+.contact-banner-title {
+  display: block !important;
+  font-family: "Cinzel", serif !important;
+  font-size: clamp(26px, 3.4vw, 40px) !important;
+  line-height: 1.2 !important;
+  color: #0F172A !important;
+  margin: 4px 0 10px !important;
+}
+
+.contact-banner-desc {
+  display: block !important;
+  font-size: 14.5px !important;
+  color: #334155;
+  line-height: 1.65 !important;
+}
+
+.contact-banner-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.footer-open-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr 1fr;
+  gap: 36px;
+  padding: 8px 0 32px;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.footer-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.footer-logo-img {
+  height: 48px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.brand-icon-mini {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #334155, #E2E8F0 45%, #93C5FD 80%, #86EFAC);
+  color: #0F172A;
+  border: 1px solid #FFFFFF;
+}
+
+.brand-icon-mini svg {
+  width: 18px;
+  height: 18px;
+}
+
+.footer-logo-title {
+  display: block;
+  font-family: "Cinzel", serif !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3.5px;
+  color: #0F172A;
+}
+
+.footer-brand-bio {
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  color: #475569;
+  max-width: 310px;
+  margin-bottom: 6px;
+}
+
+.footer-socials-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-social-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-social-link {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: #0F172A !important;
+  text-decoration: none !important;
+  transition: color 0.25s ease;
+}
+
+.footer-social-link:hover {
+  color: #2563EB !important;
+}
+
+.footer-dot {
+  color: #94A3B8;
+  font-weight: 700;
+}
+
+.footer-col-heading {
+  font-family: "Cinzel", serif !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #0F172A !important;
+  margin: 0 0 6px !important;
+}
+
+.footer-plain-line {
+  display: block;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+  color: #334155;
+}
+
+.footer-line-icon {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.footer-line-glyph {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  color: #475569;
+}
+
+.footer-contact-link {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #1E293B !important;
+  text-decoration: none !important;
+}
+
+.footer-contact-link:hover {
+  color: #2563EB !important;
+}
+
+.footer-bottom-divider {
+  margin-bottom: 22px !important;
+  opacity: 0.55;
+}
+
+.footer-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-nav-links {
+  display: flex;
+  gap: 22px;
+}
+
+.footer-link {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+}
+
+.footer-copy {
+  font-size: 12px !important;
+  color: #475569;
+}
+
+/* ==========================================
+   7. WIDGET FLOTANTE DE CHATBOT CON IA (FLUENT UI)
+   ========================================== */
+.chatbot-floating-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.chatbot-window {
+  width: min(380px, calc(100vw - 36px));
+  height: 515px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 26px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(241, 245, 249, 0.92) 100%
+  );
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1.5px solid #FFFFFF;
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.24),
+    0 0 32px rgba(203, 213, 225, 0.7);
+  overflow: hidden;
+  animation: chatbotPopIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes chatbotPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.chatbot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(90deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.95));
+}
+
+.chatbot-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatbot-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.chatbot-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chatbot-name {
+  font-family: "Cinzel", serif !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  color: #0F172A !important;
+  margin: 0 !important;
+}
+
+.chatbot-ai-badge {
+  background: linear-gradient(135deg, #334155, #64748B) !important;
+  color: #FFFFFF !important;
+  font-size: 9px !important;
+}
+
+.chatbot-status {
+  font-size: 11px !important;
+  color: #059669;
+  font-weight: 600 !important;
+}
+
+.chatbot-close-btn {
+  color: #475569 !important;
+}
+
+.chatbot-divider {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  opacity: 0.5;
+}
+
+.chatbot-messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chatbot-bubble-row {
+  display: flex;
+  width: 100%;
+}
+
+.row-bot {
+  justify-content: flex-start;
+}
+
+.row-user {
+  justify-content: flex-end;
+}
+
+.chatbot-bubble {
+  max-width: 85%;
+  padding: 11px 14px;
+  border-radius: 18px;
+  line-height: 1.5;
+}
+
+.bubble-bot {
+  background: #FFFFFF;
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  color: #0F172A;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.bubble-user {
+  background: linear-gradient(135deg, #1E293B, #334155);
+  color: #FFFFFF;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+}
+
+.bubble-user .chatbot-bubble-text {
+  color: #FFFFFF !important;
+}
+
+.chatbot-bubble-text {
+  font-size: 12.8px !important;
+  line-height: 1.55 !important;
+}
+
+.chatbot-quick-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 6px 14px 8px;
+  scrollbar-width: none;
+}
+
+.chatbot-quick-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chatbot-chip {
+  flex-shrink: 0;
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.65);
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 11px;
+  font-weight: 600;
+  color: #1E293B;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.chatbot-chip:hover {
+  background: #FFFFFF;
+  transform: translateY(-1px);
+  border-color: #475569;
+}
+
+.chatbot-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 14px;
+  border-top: 1px solid rgba(203, 213, 225, 0.65);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.chatbot-fluent-input {
+  flex: 1;
+}
+
+.chatbot-send-btn {
+  min-width: 38px !important;
+  width: 38px !important;
+  height: 38px !important;
+  padding: 0 !important;
+}
+
+.chatbot-fab-trigger {
+  padding: 12px 22px !important;
+  box-shadow:
+    0 14px 32px rgba(15, 23, 42, 0.32),
+    0 0 22px rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ==========================================
+   8. RESPONSIVE
+   ========================================== */
+@media (max-width: 1080px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-open-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .navbar {
+    padding: 12px 5%;
+  }
+  .brand-logo-img {
+    height: 42px;
+  }
+  .brand-title-text {
+    font-size: 16px !important;
+    letter-spacing: 2.5px;
+  }
+  .footer-open-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-hero-banner {
+    padding: 24px 20px;
+  }
+}
