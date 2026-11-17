@@ -14,9 +14,11 @@ import {
   Phone24Regular,
   Sparkle20Filled,
 } from "@fluentui/react-icons";
+import { useNavigate } from "react-router-dom";
 import { studioInfo } from "../data/homeData";
 
 export default function PiePagina({ onBookClick }) {
+  const navigate = useNavigate();
   const redesConEnlace = studioInfo.socials.filter((red) => red.url);
 
   return (
@@ -30,7 +32,7 @@ export default function PiePagina({ onBookClick }) {
               className="luxury-kicker-pill"
               icon={<Sparkle20Filled className="sparkle-dot" />}
             >
-              CONCIERGE PRIVADO & RESERVAS
+              ATENCIÓN EXCLUSIVA & RESERVAS
             </Badge>
             <Title2 className="contact-banner-title">
               Reserva tu Momento en <span className="shimmer-inline">Lumière Studio</span>
@@ -46,7 +48,7 @@ export default function PiePagina({ onBookClick }) {
               appearance="primary"
               size="large"
               shape="circular"
-              onClick={() => onBookClick?.("Cita desde el pie de página")}
+              onClick={() => navigate("/reservas")}
             >
               Agendar Cita Ahora
             </Button>
@@ -142,12 +144,6 @@ export default function PiePagina({ onBookClick }) {
           <Text className="footer-copy">
             © 2026 Lumière Studio · Todos los derechos reservados.
           </Text>
-
-          <div className="footer-nav-links">
-            <Link href="#inicio" appearance="subtle" className="footer-link">Inicio</Link>
-            <Link href="#resenas" appearance="subtle" className="footer-link">Reseñas</Link>
-            <Link href="#contacto" appearance="subtle" className="footer-link">Contacto</Link>
-          </div>
         </div>
       </div>
     </footer>

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import {
   Button,
   Title1,
@@ -8,10 +9,24 @@ import {
   Divider,
 } from "@fluentui/react-components";
 import { Sparkle20Filled } from "@fluentui/react-icons";
+import { animarEntradaPagina } from "../utils/gsapAnimations";
 
 export default function SeccionInicio({ onBookClick }) {
+  const heroRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = animarEntradaPagina(heroRef.current, {
+      selectorHeader: ".luxury-kicker-pill, .hero-title, .hero-description",
+      selectorItems: ".hero-actions, .hero-metrics .metric-item",
+      stagger: 0.1,
+    });
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, []);
+
   return (
-    <section className="hero-stage section-wrap" id="inicio">
+    <section ref={heroRef} className="hero-stage section-wrap" id="inicio">
       <div className="hero-copy hero-open-center">
         <Badge
           appearance="outline"
@@ -20,7 +35,7 @@ export default function SeccionInicio({ onBookClick }) {
           className="luxury-kicker-pill"
           icon={<Sparkle20Filled className="sparkle-dot" />}
         >
-          SANTUARIO DE ALTA MANICURA & SPA · NEIVA, HUILA
+          SANTUARIO DE ALTA MANICURA & SPA
         </Badge>
 
         <Title1 className="hero-title">
@@ -33,15 +48,7 @@ export default function SeccionInicio({ onBookClick }) {
         </Body1>
 
         <div className="hero-actions">
-          <Button
-            className="luxury-btn primary-glow-btn"
-            appearance="primary"
-            size="large"
-            shape="circular"
-            onClick={() => onBookClick?.("Reserva desde el inicio")}
-          >
-            Reservar Experiencia
-          </Button>
+
           <Button
             className="luxury-btn outline-glow-btn"
             appearance="outline"

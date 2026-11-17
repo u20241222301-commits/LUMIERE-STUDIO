@@ -15,7 +15,7 @@ import {
   Send24Filled,
   Sparkle24Filled,
 } from "@fluentui/react-icons";
-import { servicesCatalog, studioInfo } from "../data/homeData";
+import { initialSpecialists, servicesCatalog, studioInfo } from "../data/homeData";
 
 const listaServicios = servicesCatalog
   .map(
@@ -24,45 +24,62 @@ const listaServicios = servicesCatalog
   )
   .join("\n");
 
+const listaEspecialistas = initialSpecialists
+  .map((e) => `  - ${e.nombre} (${e.cargo}): especialista en ${e.especialidad}`)
+  .join("\n");
+
 const listaHorarios = studioInfo.hours
   .map((h) => `${h.days} ${h.time}`)
   .join(", ");
 
-const INSTRUCCIONES_SISTEMA = `Eres "Lumière Concierge", la asistente virtual de lujo de ${studioInfo.name}, un spa de uñas en ${studioInfo.city}.
+const INSTRUCCIONES_SISTEMA = `Eres "Lumière Concierge", la asistente virtual de lujo con inteligencia artificial de ${studioInfo.name}, un spa de uñas exclusivo en ${studioInfo.city}.
 Responde siempre en español con un tono elegante, cálido, breve y muy profesional (máximo 3-4 oraciones por respuesta).
+Incluye siempre emojis delicados y acordes a un spa de uñas de lujo en tus respuestas (por ejemplo: 💅, ✨, 🌸, 💎, 🎀, 🫧, 🤍, 📅, 📍, 💖).
 Información oficial del spa:
 - Servicios y precios:
 ${listaServicios}
+- Equipo de especialistas:
+${listaEspecialistas}
+- Políticas de reserva, puntualidad y cancelación:
+  1. Cancelaciones: únicamente con un mínimo de 12 horas de anticipación usando el código de ticket (3 letras y 3 números) en la sección "Consultar mi Cita".
+  2. Puntualidad: máximo 10 minutos de tolerancia después de la hora programada.
+  3. Cómo reservar: desde la sección "Reservas" eligiendo servicio, especialista, fecha y horario, o por WhatsApp.
 - Ubicación: ${studioInfo.address}, ${studioInfo.city}.
 - Horarios: ${listaHorarios}.
 - Contacto: Teléfono/WhatsApp ${studioInfo.phoneDisplay}.
-Si te preguntan algo que no sabes, invita amablemente a escribir por WhatsApp.`;
+Si te preguntan algo fuera de estos temas, responde con cortesía usando emojis e invita a escribir por WhatsApp.`;
 
 const PREGUNTAS_RAPIDAS = [
-  "¿Cuáles son los servicios y precios?",
-  "¿Dónde están ubicados y qué horario tienen?",
-  "Recomiéndame un servicio",
-  "¿Cómo agendo una cita?",
+  "💅 ¿Cuáles son los servicios y precios?",
+  "📍 ¿Dónde están ubicados y qué horario tienen?",
+  "✨ Recomiéndame un servicio",
+  "📅 ¿Cómo agendo o cancelo una cita?",
 ];
 
 function respuestaDeRespaldo(texto) {
   const q = texto.toLowerCase();
+  if (q.includes("especialista") || q.includes("equipo") || q.includes("quien")) {
+    return `✨ Nuestro equipo cuenta con 4 especialistas de lujo: Valeria (Master Nail Artist · Chrome 💎), Camila (BIAB & Cat Eye 🎀), Sofía (Esculpido & 3D Coreano 🌸) y Laura (Spa & Pedicura Imperial 🫧).`;
+  }
+  if (q.includes("cancel") || q.includes("tolerancia") || q.includes("politica") || q.includes("tarde")) {
+    return `📅 Puedes cancelar tu cita con un mínimo de 12 horas de anticipación en la sección "Consultar mi Cita" ingresando tu código de 6 caracteres ✨. Recuerda que contamos con 10 minutos de tolerancia de puntualidad 🤍.`;
+  }
   if (q.includes("precio") || q.includes("servicio") || q.includes("cuanto") || q.includes("cuesta") || q.includes("menu")) {
     const resumen = servicesCatalog
-      .map((s) => `${s.name} (${s.price} · ${s.duration})`)
+      .map((s) => `💅 ${s.name} (${s.price} · ${s.duration})`)
       .join(", ");
-    return `Nuestros servicios son: ${resumen}.`;
+    return `✨ Nuestros servicios exclusivos son: ${resumen}.`;
   }
   if (q.includes("ubic") || q.includes("direcc") || q.includes("donde") || q.includes("horario") || q.includes("abren")) {
-    return `Nos encontramos en ${studioInfo.address}, ${studioInfo.city}. Atendemos: ${listaHorarios}.`;
+    return `📍 Nos encontramos en ${studioInfo.address}, ${studioInfo.city}. 🕒 Nuestros horarios de atención son: ${listaHorarios} ✨.`;
   }
   if (q.includes("recom") || q.includes("tornasol") || q.includes("platead") || q.includes("color")) {
-    return `Si buscas un brillo espejo impactante, te recomiendo la ${servicesCatalog[0].name} (${servicesCatalog[0].price}) o el ${servicesCatalog[1].name} (${servicesCatalog[1].price}).`;
+    return `💎 Si buscas un brillo espejo impactante, te recomiendo la ${servicesCatalog[0].name} (${servicesCatalog[0].price}) 💅 o el ${servicesCatalog[1].name} (${servicesCatalog[1].price}) ✨.`;
   }
   if (q.includes("agend") || q.includes("reserv") || q.includes("cita") || q.includes("whatsapp") || q.includes("contacto")) {
-    return `Puedes reservar con el botón "Reservas" o escribiéndonos por WhatsApp al ${studioInfo.phoneDisplay}. ¡Será un honor atenderte!`;
+    return `📅 Puedes agendar directamente en la sección "Reservas" eligiendo tu servicio, especialista, fecha y hora 💅, o escribiéndonos por WhatsApp al ${studioInfo.phoneDisplay} 💖.`;
   }
-  return `Soy la Concierge Virtual de ${studioInfo.name}. Puedo ayudarte con servicios, precios, ubicación y reservas. También puedes escribirnos por WhatsApp al ${studioInfo.phoneDisplay}.`;
+  return `✨ Soy la Concierge Virtual con IA de ${studioInfo.name} 💅. Puedo asesorarte sobre nuestros 10 servicios, especialistas, precios, políticas de reserva y horarios, o atenderte por WhatsApp al ${studioInfo.phoneDisplay} 💖.`;
 }
 
 export default function AsistenteChat() {
@@ -73,7 +90,7 @@ export default function AsistenteChat() {
     {
       id: 1,
       emisor: "bot",
-      texto: `¡Bienvenida a ${studioInfo.name}! Soy tu Concierge con IA. ¿En qué puedo asesorarte hoy sobre nuestros servicios o tu próxima cita?`,
+      texto: `✨ ¡Bienvenida a ${studioInfo.name}! 💅 Soy tu Concierge con IA 🌸. ¿En qué puedo asesorarte hoy sobre nuestros servicios o tu próxima cita? 💖`,
     },
   ]);
   const finMensajesRef = useRef(null);
@@ -97,42 +114,61 @@ export default function AsistenteChat() {
     setCargando(true);
 
     try {
-      const mensajesApi = [
-        { role: "system", content: INSTRUCCIONES_SISTEMA },
-        ...historial.slice(-6).map((m) => ({
-          role: m.emisor === "user" ? "user" : "assistant",
-          content: m.texto,
-        })),
-      ];
+      const mensajesApi = historial.slice(-6).map((m) => ({
+        role: m.emisor === "user" ? "user" : "assistant",
+        content: m.texto,
+      }));
 
-      const controlador = new AbortController();
-      const temporizador = setTimeout(() => controlador.abort(), 8500);
+      let textoIA = "";
 
-      const respuesta = await fetch("https://text.pollinations.ai/openai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "openai",
-          messages: mensajesApi,
-          temperature: 0.6,
-        }),
-        signal: controlador.signal,
-      });
-
-      clearTimeout(temporizador);
-
-      if (!respuesta.ok) {
-        throw new Error(`HTTP ${respuesta.status}`);
+      try {
+        const resPropia = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sistema: INSTRUCCIONES_SISTEMA,
+            mensajes: mensajesApi,
+          }),
+        });
+        if (resPropia.ok) {
+          const datosPropios = await resPropia.json();
+          textoIA = String(datosPropios?.texto || "").trim();
+        }
+      } catch {
+        textoIA = "";
       }
 
-      const datos = await respuesta.json();
-      const textoIA =
-        datos?.choices?.[0]?.message?.content?.trim() ||
-        respuestaDeRespaldo(limpio);
+      if (!textoIA) {
+        const controlador = new AbortController();
+        const temporizador = setTimeout(() => controlador.abort(), 8500);
+
+        const respuesta = await fetch("https://text.pollinations.ai/openai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "openai",
+            messages: [
+              { role: "system", content: INSTRUCCIONES_SISTEMA },
+              ...mensajesApi,
+            ],
+            temperature: 0.6,
+          }),
+          signal: controlador.signal,
+        });
+
+        clearTimeout(temporizador);
+
+        if (!respuesta.ok) {
+          throw new Error(`HTTP ${respuesta.status}`);
+        }
+
+        const datos = await respuesta.json();
+        textoIA = datos?.choices?.[0]?.message?.content?.trim() || "";
+      }
 
       setMensajes((prev) => [
         ...prev,
-        { id: nuevoId(), emisor: "bot", texto: textoIA },
+        { id: nuevoId(), emisor: "bot", texto: textoIA || respuestaDeRespaldo(limpio) },
       ]);
     } catch {
       setMensajes((prev) => [
@@ -156,7 +192,7 @@ export default function AsistenteChat() {
           <div className="chatbot-header">
             <div className="chatbot-header-left">
               <div className="avatar-tornasol-ring">
-                <Avatar name="Lumière IA" size={36} color="steel" />
+                <Avatar name="Lumière IA" size={36} color="brand" />
               </div>
               <div className="chatbot-title-group">
                 <div className="chatbot-title-row">
