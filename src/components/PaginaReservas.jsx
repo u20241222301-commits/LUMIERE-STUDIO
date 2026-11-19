@@ -403,6 +403,12 @@ export default function PaginaReservas({ servicioInicial }) {
                     src={disenoInspiracion.imagenRegularUrl}
                     alt={disenoInspiracion.titulo}
                     className="booking-inspiration-ref-img"
+                    onError={(e) => {
+                      const fallback = "/imagenes/servicio-manicura-rosa-perlada.png";
+                      if (e.currentTarget.src !== window.location.origin + fallback) {
+                        e.currentTarget.src = fallback;
+                      }
+                    }}
                   />
                   <div className="booking-inspiration-ref-info">
                     <span className="booking-inspiration-ref-kicker">

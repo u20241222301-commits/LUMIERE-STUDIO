@@ -370,6 +370,15 @@ export default function PaginaInspiracion() {
                     loading="lazy"
                     decoding="async"
                     className="inspiracion-photo-img"
+                    onError={(e) => {
+                      const fallback =
+                        foto.imagenRespaldoLocal ||
+                        "/imagenes/servicio-manicura-rosa-perlada.png";
+                      if (e.currentTarget.src !== window.location.origin + fallback) {
+                        e.currentTarget.srcset = "";
+                        e.currentTarget.src = fallback;
+                      }
+                    }}
                   />
 
                   <div className="inspiracion-hover-overlay">
@@ -481,6 +490,14 @@ export default function PaginaInspiracion() {
                 src={fotoModal.imagenGrandeUrl || fotoModal.imagenRegularUrl}
                 alt={fotoModal.titulo}
                 className="inspiracion-lightbox-img"
+                onError={(e) => {
+                  const fallback =
+                    fotoModal.imagenRespaldoLocal ||
+                    "/imagenes/servicio-manicura-rosa-perlada.png";
+                  if (e.currentTarget.src !== window.location.origin + fallback) {
+                    e.currentTarget.src = fallback;
+                  }
+                }}
               />
             </div>
 

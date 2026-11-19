@@ -121,49 +121,23 @@ export default function AsistenteChat() {
 
       let textoIA = "";
 
-      try {
-        const resPropia = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sistema: INSTRUCCIONES_SISTEMA,
-            mensajes: mensajesApi,
-          }),
-        });
-        if (resPropia.ok) {
-          const datosPropios = await resPropia.json();
-          textoIA = String(datosPropios?.texto || "").trim();
+      if (import.meta.env.DEV) {
+        try {
+          const resPropia = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              sistema: INSTRUCCIONES_SISTEMA,
+              mensajes: mensajesApi,
+            }),
+          });
+          if (resPropia.ok) {
+            const datosPropios = await resPropia.json();
+            textoIA = String(datosPropios?.texto || "").trim();
+          }
+        } catch {
+          textoIA = "";
         }
-      } catch {
-        textoIA = "";
-      }
-
-      if (!textoIA) {
-        const controlador = new AbortController();
-        const temporizador = setTimeout(() => controlador.abort(), 8500);
-
-        const respuesta = await fetch("https://text.pollinations.ai/openai", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "openai",
-            messages: [
-              { role: "system", content: INSTRUCCIONES_SISTEMA },
-              ...mensajesApi,
-            ],
-            temperature: 0.6,
-          }),
-          signal: controlador.signal,
-        });
-
-        clearTimeout(temporizador);
-
-        if (!respuesta.ok) {
-          throw new Error(`HTTP ${respuesta.status}`);
-        }
-
-        const datos = await respuesta.json();
-        textoIA = datos?.choices?.[0]?.message?.content?.trim() || "";
       }
 
       setMensajes((prev) => [

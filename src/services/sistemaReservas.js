@@ -490,19 +490,21 @@ export async function registrarNuevaReserva(datosFormulario) {
     actualizadoEn: ahoraISO,
   };
 
-  try {
-    const resCalendar = await fetch("/api/google/crear-evento", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(nuevaReserva),
-    });
-    if (resCalendar.ok) {
-      const dataCal = await resCalendar.json();
-      nuevaReserva.googleEventId = dataCal.eventId || "";
-      nuevaReserva.googleCalendarStatus = dataCal.estado || "sincronizado";
+  if (import.meta.env.DEV) {
+    try {
+      const resCalendar = await fetch("/api/google/crear-evento", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuevaReserva),
+      });
+      if (resCalendar.ok) {
+        const dataCal = await resCalendar.json();
+        nuevaReserva.googleEventId = dataCal.eventId || "";
+        nuevaReserva.googleCalendarStatus = dataCal.estado || "sincronizado";
+      }
+    } catch {
+      nuevaReserva.googleCalendarStatus = "guardada_en_cookies";
     }
-  } catch {
-    nuevaReserva.googleCalendarStatus = "guardada_en_cookies";
   }
 
   const actualizadas = [nuevaReserva, ...reservasActuales];
@@ -594,34 +596,36 @@ export async function cancelarReservaPorTicket(codigoEntrada) {
     );
   }
 
-  try {
-    const resVal = await fetch("/api/reservas/validar-cancelacion", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ticket: codigo,
-        fecha: r.fecha,
-        hora: r.hora,
-        estadoActual: r.estado,
-      }),
-    });
-    if (resVal.status === 400) {
-      const dataErr = await resVal.json();
-      throw new Error(
-        dataErr.error ||
-          "No es posible cancelar la cita porque no se cumple el tiempo mínimo de 12 horas de anticipación."
-      );
-    }
-  } catch (err) {
-    if (err.message && err.message.includes("12 horas")) {
-      throw err;
+  if (import.meta.env.DEV) {
+    try {
+      const resVal = await fetch("/api/reservas/validar-cancelacion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ticket: codigo,
+          fecha: r.fecha,
+          hora: r.hora,
+          estadoActual: r.estado,
+        }),
+      });
+      if (resVal.status === 400) {
+        const dataErr = await resVal.json();
+        throw new Error(
+          dataErr.error ||
+            "No es posible cancelar la cita porque no se cumple el tiempo mínimo de 12 horas de anticipación."
+        );
+      }
+    } catch (err) {
+      if (err.message && err.message.includes("12 horas")) {
+        throw err;
+      }
     }
   }
 
   reservasCookie[idx].estado = "cancelada";
   reservasCookie[idx].actualizadoEn = new Date().toISOString();
 
-  if (reservasCookie[idx].googleEventId) {
+  if (import.meta.env.DEV && reservasCookie[idx].googleEventId) {
     try {
       const resCal = await fetch("/api/google/cancelar-evento", {
         method: "POST",
@@ -748,37 +752,39 @@ export async function actualizarEstadoReservaAdmin({ pin, ticket, estado }) {
     );
   }
 
-  try {
-    const resValAdmin = await fetch("/api/admin/validar-estado", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        pin,
-        ticket: reservasCookie[idx].ticket,
-        estadoActual: reservasCookie[idx].estado,
-        nuevoEstado: estado,
-      }),
-    });
-    if (resValAdmin.status === 400 || resValAdmin.status === 401) {
-      const dataErr = await resValAdmin.json();
-      throw new Error(
-        dataErr.error ||
-          "Operación no permitida: una cita cancelada no puede marcarse como realizada."
-      );
-    }
-  } catch (err) {
-    if (
-      err.message &&
-      (err.message.includes("Cancelada") || err.message.includes("cancelada"))
-    ) {
-      throw err;
+  if (import.meta.env.DEV) {
+    try {
+      const resValAdmin = await fetch("/api/admin/validar-estado", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pin,
+          ticket: reservasCookie[idx].ticket,
+          estadoActual: reservasCookie[idx].estado,
+          nuevoEstado: estado,
+        }),
+      });
+      if (resValAdmin.status === 400 || resValAdmin.status === 401) {
+        const dataErr = await resValAdmin.json();
+        throw new Error(
+          dataErr.error ||
+            "Operación no permitida: una cita cancelada no puede marcarse como realizada."
+        );
+      }
+    } catch (err) {
+      if (
+        err.message &&
+        (err.message.includes("Cancelada") || err.message.includes("cancelada"))
+      ) {
+        throw err;
+      }
     }
   }
 
   reservasCookie[idx].estado = estado;
   reservasCookie[idx].actualizadoEn = new Date().toISOString();
 
-  if (estado === "cancelada" && reservasCookie[idx].googleEventId) {
+  if (import.meta.env.DEV && estado === "cancelada" && reservasCookie[idx].googleEventId) {
     try {
       const resCal = await fetch("/api/google/cancelar-evento", {
         method: "POST",
