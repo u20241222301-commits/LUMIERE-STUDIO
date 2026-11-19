@@ -2,6 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { consultarFotosUnsplash } from "./unsplashService.js";
+import {
+  enviarMensajeTextoWaha,
+  enviarNotificacionCancelacionWaha,
+  enviarNotificacionReservaWaha,
+  generarHtmlPanelWaha,
+  iniciarMotorWahaLocal,
+  reiniciarSesionWahaLocal,
+  verificarEstadoSesionWaha,
+} from "./wahaService.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +28,9 @@ function cargarVariablesEntorno() {
     GEMINI_MODEL: "gemini-3.8-flash",
     UNSPLASH_ACCESS_KEY: "",
     UNSPLASH_SECRET_KEY: "",
+    WAHA_API_URL: "http://localhost:3000",
+    WAHA_API_KEY: "",
+    WAHA_SESSION: "default",
     ...process.env,
   };
   try {
@@ -446,6 +458,31 @@ async function responderConGemini(sistema, mensajes) {
 
 function crearMiddlewareApi() {
   return async (req, res, next) => {
+    if (req.url && req.url.startsWith("/node_modules/.vite/deps/")) {
+      const urlDep = new URL(req.url, "http://localhost");
+      const nombreArchivo = path.basename(urlDep.pathname);
+      const dirDeps = path.resolve(__dirname, "..", "node_modules", ".vite", "deps");
+      const rutaExacta = path.join(dirDeps, nombreArchivo);
+
+      if (!fs.existsSync(rutaExacta) && fs.existsSync(dirDeps)) {
+        const coincidenciaPrefijo = nombreArchivo.match(/^([a-zA-Z0-9_-]+)-[A-Za-z0-9_]+\.js$/);
+        if (coincidenciaPrefijo) {
+          const prefijo = `${coincidenciaPrefijo[1]}-`;
+          const candidatos = fs
+            .readdirSync(dirDeps)
+            .filter((f) => f.startsWith(prefijo) && f.endsWith(".js") && !f.endsWith(".js.map"));
+          if (candidatos.length > 0) {
+            const rutaActual = path.join(dirDeps, candidatos[0]);
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/javascript; charset=utf-8");
+            res.setHeader("Cache-Control", "no-store");
+            res.end(fs.readFileSync(rutaActual));
+            return;
+          }
+        }
+      }
+    }
+
     if (req.url === "/favicon.ico") {
       const favPath = path.resolve(__dirname, "..", "public", "favicon-lumiere.png");
       if (fs.existsSync(favPath)) {
@@ -573,6 +610,84 @@ function crearMiddlewareApi() {
         });
       }
 
+      if (metodo === "GET" && pathname === "/api/whatsapp/panel") {
+        iniciarMotorWahaLocal();
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        res.end(generarHtmlPanelWaha());
+        return;
+      }
+
+      if (metodo === "POST" && pathname === "/api/whatsapp/reiniciar") {
+        const estado = await reiniciarSesionWahaLocal();
+        return enviarJson(res, 200, {
+          ok: true,
+          ...estado,
+        });
+      }
+
+      if (metodo === "POST" && pathname === "/api/sendText") {
+        const env = cargarVariablesEntorno();
+        const body = await leerBodyJson(req);
+        const resultado = await enviarMensajeTextoWaha({
+          wahaUrl: env.WAHA_API_URL,
+          wahaApiKey: env.WAHA_API_KEY,
+          wahaSession: body.session || env.WAHA_SESSION || "default",
+          chatId: body.chatId || "",
+          text: body.text || "",
+        });
+        return enviarJson(res, 200, {
+          ok: true,
+          ...resultado,
+        });
+      }
+
+      if (metodo === "GET" && pathname === "/api/whatsapp/estado") {
+        const env = cargarVariablesEntorno();
+        const estado = await verificarEstadoSesionWaha({
+          wahaUrl: env.WAHA_API_URL,
+          wahaApiKey: env.WAHA_API_KEY,
+          wahaSession: env.WAHA_SESSION,
+        });
+        return enviarJson(res, 200, {
+          ok: true,
+          ...estado,
+        });
+      }
+
+      if (metodo === "POST" && pathname === "/api/whatsapp/notificar-reserva") {
+        const env = cargarVariablesEntorno();
+        const reserva = await leerBodyJson(req);
+        const resultado = await enviarNotificacionReservaWaha({
+          wahaUrl: env.WAHA_API_URL,
+          wahaApiKey: env.WAHA_API_KEY,
+          wahaSession: env.WAHA_SESSION,
+          reserva,
+        });
+        return enviarJson(res, 200, {
+          ok: true,
+          ...resultado,
+        });
+      }
+
+      if (metodo === "POST" && pathname === "/api/whatsapp/notificar-cancelacion") {
+        const env = cargarVariablesEntorno();
+        const body = await leerBodyJson(req);
+        const reserva = body.reserva || body;
+        const origen = body.origen || "cliente";
+        const resultado = await enviarNotificacionCancelacionWaha({
+          wahaUrl: env.WAHA_API_URL,
+          wahaApiKey: env.WAHA_API_KEY,
+          wahaSession: env.WAHA_SESSION,
+          reserva,
+          origen,
+        });
+        return enviarJson(res, 200, {
+          ok: true,
+          ...resultado,
+        });
+      }
+
       return enviarJson(res, 200, {
         ok: true,
         reservas: [],
@@ -594,9 +709,15 @@ export function lumiereApiPlugin() {
     name: "lumiere-studio-backend-api",
     configureServer(server) {
       server.middlewares.use(middleware);
+      setTimeout(() => {
+        iniciarMotorWahaLocal();
+      }, 1000);
     },
     configurePreviewServer(server) {
       server.middlewares.use(middleware);
+      setTimeout(() => {
+        iniciarMotorWahaLocal();
+      }, 1000);
     },
   };
 }

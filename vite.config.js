@@ -7,6 +7,8 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: false,
-    cors: true,
+    watch: {
+      ignored: ["**/server/waha_auth_session/**"],
+    },
   },
 });

@@ -318,6 +318,13 @@ export default function PaginaAdmin() {
             <button
               type="button"
               className="service-tab-pill"
+              onClick={() => window.open("/api/whatsapp/panel", "_blank")}
+            >
+              Vincular WhatsApp (WAHA QR)
+            </button>
+            <button
+              type="button"
+              className="service-tab-pill"
               onClick={manejarCerrarSesionAdmin}
             >
               Bloquear Panel

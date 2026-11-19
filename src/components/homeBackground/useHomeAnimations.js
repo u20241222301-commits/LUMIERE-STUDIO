@@ -17,8 +17,6 @@ export default function useHomeAnimations(rootRef, activo = true) {
       const escenaHands = contenedor.querySelector(".home-scene-hands");
       const capaTransicion = contenedor.querySelector(".home-paint-transition-layer");
 
-      const mediaFondo1 = contenedor.querySelector(".gsap-bg-media-1");
-      const mediaFondo2 = contenedor.querySelector(".gsap-bg-media-2");
       const luzProfundidad1 = contenedor.querySelector(".gsap-bg-depth-glow-1");
       const luzProfundidad2 = contenedor.querySelector(".gsap-bg-depth-glow-2");
 
@@ -53,22 +51,6 @@ export default function useHomeAnimations(rootRef, activo = true) {
         return;
       }
 
-      if (mediaFondo1) {
-        gsap.fromTo(
-          mediaFondo1,
-          { scale: 1.02, x: -8, y: -6 },
-          {
-            scale: 1.075,
-            x: 8,
-            y: 6,
-            duration: 9.5,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          }
-        );
-      }
-
       if (luzProfundidad1) {
         gsap.fromTo(
           luzProfundidad1,
@@ -79,22 +61,6 @@ export default function useHomeAnimations(rootRef, activo = true) {
             y: 12,
             scale: 1.06,
             duration: 7.2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          }
-        );
-      }
-
-      if (mediaFondo2) {
-        gsap.fromTo(
-          mediaFondo2,
-          { scale: 1.025, x: 8, y: -6 },
-          {
-            scale: 1.08,
-            x: -8,
-            y: 6,
-            duration: 10.2,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
@@ -135,15 +101,6 @@ export default function useHomeAnimations(rootRef, activo = true) {
         });
 
         tlScroll
-          .to(
-            escenaPolish,
-            {
-              scale: 0.96,
-              duration: 0.28,
-              ease: "power1.inOut",
-            },
-            0
-          )
           .to(
             capaTransicion,
             {
@@ -193,16 +150,6 @@ export default function useHomeAnimations(rootRef, activo = true) {
               ease: "none",
             },
             0.48
-          )
-          .fromTo(
-            escenaHands,
-            { scale: 1.04 },
-            {
-              scale: 1,
-              duration: 0.36,
-              ease: "power2.out",
-            },
-            0.5
           )
           .to(
             bandasTransicion,

@@ -10,10 +10,8 @@ import {
   Title3,
 } from "@fluentui/react-components";
 import {
-  ArrowExpand20Regular,
   CalendarLtr24Regular,
   Dismiss24Regular,
-  Open16Regular,
   Search24Regular,
   Sparkle20Filled,
 } from "@fluentui/react-icons";
@@ -39,9 +37,10 @@ export default function PaginaInspiracion() {
   const [busquedaActiva, setBusquedaActiva] = useState("");
   const [categoriaActiva, setCategoriaActiva] = useState("todas");
   const [fotografias, setFotografias] = useState([]);
+  const [disenosSolicitados, setDisenosSolicitados] = useState(false);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [hayMasPaginas, setHayMasPaginas] = useState(true);
-  const [cargandoInicial, setCargandoInicial] = useState(true);
+  const [hayMasPaginas, setHayMasPaginas] = useState(false);
+  const [cargandoInicial, setCargandoInicial] = useState(false);
   const [cargandoMas, setCargandoMas] = useState(false);
   const [errorGaleria, setErrorGaleria] = useState("");
   const [fotoModal, setFotoModal] = useState(null);
@@ -53,6 +52,7 @@ export default function PaginaInspiracion() {
       page = 1,
       acumular = false,
     } = {}) => {
+      setDisenosSolicitados(true);
       setErrorGaleria("");
       if (acumular) {
         setCargandoMas(true);
@@ -83,10 +83,10 @@ export default function PaginaInspiracion() {
         setPaginaActual(page);
         setHayMasPaginas(Boolean(respuesta.hayMas));
       } catch (err) {
-        if (err.name === "AbortError") return;
+        if (err && err.name === "AbortError") return;
         setErrorGaleria(
           err.message ||
-            "No fue posible cargar las fotografías en este momento. Intenta nuevamente."
+            "No fue posible cargar las fotografías desde Unsplash en este momento. Intenta nuevamente."
         );
       } finally {
         setCargandoInicial(false);
@@ -97,11 +97,10 @@ export default function PaginaInspiracion() {
   );
 
   useEffect(() => {
-    cargarGaleria({ query: "", categoria: "todas", page: 1, acumular: false });
     return () => {
       cancelarSolicitudInspiracionActiva();
     };
-  }, [cargarGaleria]);
+  }, []);
 
   useEffect(() => {
     const ctx = animarEntradaPagina(paginaRef.current, {
@@ -127,6 +126,20 @@ export default function PaginaInspiracion() {
     };
   }, [fotografias]);
 
+  const manejarCargarDisenos = (e) => {
+    if (e?.currentTarget) {
+      animarPulsoSeleccion(e.currentTarget);
+    }
+    const limpio = textoBusqueda.trim();
+    setBusquedaActiva(limpio);
+    cargarGaleria({
+      query: limpio,
+      categoria: categoriaActiva,
+      page: 1,
+      acumular: false,
+    });
+  };
+
   const manejarSubmitBusqueda = (e) => {
     e.preventDefault();
     const limpio = textoBusqueda.trim();
@@ -140,38 +153,42 @@ export default function PaginaInspiracion() {
   };
 
   const manejarLimpiarBusqueda = () => {
+    cancelarSolicitudInspiracionActiva();
     setTextoBusqueda("");
     setBusquedaActiva("");
     setCategoriaActiva("todas");
-    cargarGaleria({
-      query: "",
-      categoria: "todas",
-      page: 1,
-      acumular: false,
-    });
+    setFotografias([]);
+    setDisenosSolicitados(false);
+    setPaginaActual(1);
+    setHayMasPaginas(false);
+    setErrorGaleria("");
   };
 
   const manejarSeleccionCategoria = (idCat, botonEl) => {
     if (botonEl) animarPulsoSeleccion(botonEl);
     setCategoriaActiva(idCat);
-    cargarGaleria({
-      query: busquedaActiva,
-      categoria: idCat,
-      page: 1,
-      acumular: false,
-    });
+    if (disenosSolicitados) {
+      cargarGaleria({
+        query: busquedaActiva,
+        categoria: idCat,
+        page: 1,
+        acumular: false,
+      });
+    }
   };
 
   const manejarSugerenciaRapida = (sugerencia, botonEl) => {
     if (botonEl) animarPulsoSeleccion(botonEl);
     setTextoBusqueda(sugerencia);
     setBusquedaActiva(sugerencia);
-    cargarGaleria({
-      query: sugerencia,
-      categoria: "todas",
-      page: 1,
-      acumular: false,
-    });
+    if (disenosSolicitados) {
+      cargarGaleria({
+        query: sugerencia,
+        categoria: "todas",
+        page: 1,
+        acumular: false,
+      });
+    }
   };
 
   const manejarCargarMas = (e) => {
@@ -182,6 +199,10 @@ export default function PaginaInspiracion() {
       page: paginaActual + 1,
       acumular: true,
     });
+  };
+
+  const descartarFotoInvalida = (idFoto) => {
+    setFotografias((prev) => prev.filter((item) => item.id !== idFoto));
   };
 
   const irAReservarConInspiracion = (foto) => {
@@ -207,8 +228,8 @@ export default function PaginaInspiracion() {
     <div ref={paginaRef} className="services-page-wrap section-wrap">
       <IndicadorPincelCarga
         visible={cargandoInicial}
-        mensaje="Buscando diseños e inspiración..."
-        submensaje="Un momento, estamos preparando la galería para ti"
+        mensaje="Consultando diseños en Unsplash..."
+        submensaje="Un momento, estamos trayendo las fotografías para ti"
       />
 
       <section className="services-hero-header">
@@ -244,12 +265,12 @@ export default function PaginaInspiracion() {
               className="inspiracion-search-input"
               aria-label="Buscar diseños de uñas"
             />
-            {(textoBusqueda || busquedaActiva || categoriaActiva !== "todas") && (
+            {(textoBusqueda || busquedaActiva || categoriaActiva !== "todas" || disenosSolicitados) && (
               <button
                 type="button"
                 className="inspiracion-clear-btn"
                 onClick={manejarLimpiarBusqueda}
-                aria-label="Limpiar búsqueda y restaurar galería"
+                aria-label="Limpiar filtros y galería"
               >
                 <Dismiss24Regular />
                 <span>Limpiar</span>
@@ -258,15 +279,16 @@ export default function PaginaInspiracion() {
           </div>
 
           <Button
-            type="submit"
+            type="button"
             appearance="primary"
             shape="circular"
             size="large"
             className="luxury-btn primary-glow-btn inspiracion-submit-btn"
-            icon={<Search24Regular />}
+            icon={<Sparkle20Filled />}
             disabled={cargandoInicial}
+            onClick={manejarCargarDisenos}
           >
-            Buscar
+            Cargar diseños
           </Button>
         </form>
 
@@ -277,6 +299,7 @@ export default function PaginaInspiracion() {
               key={sug}
               type="button"
               className={`inspiracion-suggestion-chip ${
+                textoBusqueda.toLowerCase() === sug.toLowerCase() ||
                 busquedaActiva.toLowerCase() === sug.toLowerCase()
                   ? "inspiracion-suggestion-active"
                   : ""
@@ -318,20 +341,41 @@ export default function PaginaInspiracion() {
             shape="circular"
             appearance="primary"
             className="luxury-btn primary-glow-btn"
-            onClick={manejarLimpiarBusqueda}
+            onClick={manejarCargarDisenos}
           >
             Reintentar
           </Button>
         </div>
       )}
 
-      {!cargandoInicial && fotografias.length === 0 ? (
+      {!disenosSolicitados && !cargandoInicial ? (
+        <div className="booking-form-card inspiracion-empty-card">
+          <Title3 className="booking-step-title">
+            Explora diseños de uñas en tiempo real desde Unsplash
+          </Title3>
+          <Text className="ticket-helper-text">
+            Selecciona una categoría, elige una tendencia o escribe tu estilo favorito y presiona el botón para cargar los diseños disponibles en Unsplash.
+          </Text>
+          <div>
+            <Button
+              appearance="primary"
+              shape="circular"
+              size="large"
+              className="luxury-btn primary-glow-btn"
+              icon={<Sparkle20Filled />}
+              onClick={manejarCargarDisenos}
+            >
+              Cargar diseños
+            </Button>
+          </div>
+        </div>
+      ) : !cargandoInicial && fotografias.length === 0 ? (
         <div className="booking-form-card inspiracion-empty-card">
           <Title3 className="booking-step-title">
             No encontramos fotografías para "{busquedaActiva || categoriaActiva}"
           </Title3>
           <Text className="ticket-helper-text">
-            Prueba con otros términos como "uñas rosadas", "manicura francesa", "uñas almendradas" o explora todas las categorías.
+            Prueba con otros términos como "uñas rosadas", "manicura francesa", "uñas almendradas" o selecciona otra categoría.
           </Text>
           <div>
             <Button
@@ -339,9 +383,10 @@ export default function PaginaInspiracion() {
               shape="circular"
               size="medium"
               className="luxury-btn primary-glow-btn"
-              onClick={manejarLimpiarBusqueda}
+              icon={<Sparkle20Filled />}
+              onClick={manejarCargarDisenos}
             >
-              Ver toda la galería inicial
+              Cargar diseños
             </Button>
           </div>
         </div>
@@ -370,15 +415,7 @@ export default function PaginaInspiracion() {
                     loading="lazy"
                     decoding="async"
                     className="inspiracion-photo-img"
-                    onError={(e) => {
-                      const fallback =
-                        foto.imagenRespaldoLocal ||
-                        "/imagenes/servicio-manicura-rosa-perlada.png";
-                      if (e.currentTarget.src !== window.location.origin + fallback) {
-                        e.currentTarget.srcset = "";
-                        e.currentTarget.src = fallback;
-                      }
-                    }}
+                    onError={() => descartarFotoInvalida(foto.id)}
                   />
 
                   <div className="inspiracion-hover-overlay">
@@ -390,8 +427,7 @@ export default function PaginaInspiracion() {
                         setFotoModal(foto);
                       }}
                     >
-                      <ArrowExpand20Regular />
-                      <span>Ampliar diseño</span>
+                      <span>✦ Ampliar diseño</span>
                     </button>
 
                     <div className="inspiracion-hover-info">
@@ -490,14 +526,6 @@ export default function PaginaInspiracion() {
                 src={fotoModal.imagenGrandeUrl || fotoModal.imagenRegularUrl}
                 alt={fotoModal.titulo}
                 className="inspiracion-lightbox-img"
-                onError={(e) => {
-                  const fallback =
-                    fotoModal.imagenRespaldoLocal ||
-                    "/imagenes/servicio-manicura-rosa-perlada.png";
-                  if (e.currentTarget.src !== window.location.origin + fallback) {
-                    e.currentTarget.src = fallback;
-                  }
-                }}
               />
             </div>
 
@@ -542,8 +570,7 @@ export default function PaginaInspiracion() {
                     rel="noopener noreferrer"
                     className="attribution-pill-link"
                   >
-                    <span>Perfil del fotógrafo</span>
-                    <Open16Regular />
+                    <span>Perfil del fotógrafo ↗</span>
                   </a>
 
                   <a
@@ -552,8 +579,7 @@ export default function PaginaInspiracion() {
                     rel="noopener noreferrer"
                     className="attribution-pill-link"
                   >
-                    <span>Ver fotografía original</span>
-                    <Open16Regular />
+                    <span>Ver fotografía original ↗</span>
                   </a>
                 </div>
               </div>

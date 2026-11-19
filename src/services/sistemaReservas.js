@@ -7,6 +7,10 @@ import {
   enviarCorreoCancelacionReserva,
   enviarCorreoConfirmacionReserva,
 } from "./emailService";
+import {
+  enviarWhatsAppCancelacionReserva,
+  enviarWhatsAppConfirmacionReserva,
+} from "./whatsappService";
 
 export const REGEX_TICKET = /^[A-Z]{3}[0-9]{3}$/;
 
@@ -485,6 +489,9 @@ export async function registrarNuevaReserva(datosFormulario) {
     googleCalendarStatus: "pendiente_config",
     emailConfirmacionEnviado: false,
     emailCancelacionEnviado: false,
+    whatsappConfirmacionEnviado: false,
+    whatsappCancelacionEnviado: false,
+    whatsappStatus: "pendiente_config",
     estado: "confirmada",
     creadoEn: ahoraISO,
     actualizadoEn: ahoraISO,
@@ -516,13 +523,24 @@ export async function registrarNuevaReserva(datosFormulario) {
     leerResenasCookies()
   );
 
-  const resEmail = await enviarCorreoConfirmacionReserva(reservaEnriquecida);
+  const [resEmail, resWhatsApp] = await Promise.all([
+    enviarCorreoConfirmacionReserva(reservaEnriquecida),
+    enviarWhatsAppConfirmacionReserva(reservaEnriquecida),
+  ]);
+
   if (resEmail?.enviado) {
     nuevaReserva.emailConfirmacionEnviado = true;
-    guardarReservasCookies(actualizadas);
+  }
+  if (resWhatsApp?.enviado) {
+    nuevaReserva.whatsappConfirmacionEnviado = true;
+    nuevaReserva.whatsappStatus = "enviado_waha";
+  } else if (resWhatsApp?.estado) {
+    nuevaReserva.whatsappStatus = resWhatsApp.estado;
   }
 
-  return reservaEnriquecida;
+  guardarReservasCookies(actualizadas);
+
+  return enriquecerReservaPublica(nuevaReserva, leerResenasCookies());
 }
 
 export async function consultarReservaPorTicket(codigoEntrada) {
@@ -651,9 +669,16 @@ export async function cancelarReservaPorTicket(codigoEntrada) {
     leerResenasCookies()
   );
 
-  const resEmail = await enviarCorreoCancelacionReserva(reservaActualizada);
+  const [resEmail, resWhatsApp] = await Promise.all([
+    enviarCorreoCancelacionReserva(reservaActualizada),
+    enviarWhatsAppCancelacionReserva(reservaActualizada, "cliente"),
+  ]);
+
   if (resEmail?.enviado) {
     reservasCookie[idx].emailCancelacionEnviado = true;
+  }
+  if (resWhatsApp?.enviado) {
+    reservasCookie[idx].whatsappCancelacionEnviado = true;
   }
 
   guardarReservasCookies(reservasCookie);
@@ -804,11 +829,19 @@ export async function actualizarEstadoReservaAdmin({ pin, ticket, estado }) {
   }
 
   if (estado === "cancelada") {
-    const resEmailCancel = await enviarCorreoCancelacionReserva(
-      enriquecerReservaPublica(reservasCookie[idx], leerResenasCookies())
+    const reservaEnriquecidaAdmin = enriquecerReservaPublica(
+      reservasCookie[idx],
+      leerResenasCookies()
     );
+    const [resEmailCancel, resWhatsAppCancel] = await Promise.all([
+      enviarCorreoCancelacionReserva(reservaEnriquecidaAdmin),
+      enviarWhatsAppCancelacionReserva(reservaEnriquecidaAdmin, "admin"),
+    ]);
     if (resEmailCancel?.enviado) {
       reservasCookie[idx].emailCancelacionEnviado = true;
+    }
+    if (resWhatsAppCancel?.enviado) {
+      reservasCookie[idx].whatsappCancelacionEnviado = true;
     }
   }
 
