@@ -23,9 +23,8 @@ export const studioInfo = {
     { days: "Domingos & Festivos", time: "10:00 AM – 5:00 PM (con cita)" },
   ],
   socials: [
-    { name: "Instagram", url: "" },
-    { name: "TikTok", url: "" },
-    { name: "Facebook", url: "" },
+    { name: "Instagram", url: "https://www.instagram.com" },
+    { name: "Facebook", url: "https://www.facebook.com" },
   ],
 };
 

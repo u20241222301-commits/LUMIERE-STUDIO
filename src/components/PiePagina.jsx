@@ -17,6 +17,46 @@ import {
 import { useNavigate } from "react-router-dom";
 import { studioInfo } from "../data/homeData";
 
+function InstagramIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+function FacebookIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
 export default function PiePagina({ onBookClick }) {
   const navigate = useNavigate();
   const redesConEnlace = studioInfo.socials.filter((red) => red.url);
@@ -82,18 +122,23 @@ export default function PiePagina({ onBookClick }) {
 
             {redesConEnlace.length > 0 && (
               <div className="footer-socials-row" aria-label="Redes sociales de Lumière Studio">
-                {redesConEnlace.map((red, i) => (
-                  <span key={red.name} className="footer-social-item">
-                    {i > 0 && <span className="footer-dot">·</span>}
-                    <Link
-                      href={red.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="footer-social-link"
-                    >
-                      {red.name}
-                    </Link>
-                  </span>
+                {redesConEnlace.map((red) => (
+                  <a
+                    key={red.name}
+                    href={red.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="footer-social-pill"
+                    aria-label={red.name}
+                  >
+                    {red.name.toLowerCase().includes("instagram") && (
+                      <InstagramIcon className="footer-social-svg" />
+                    )}
+                    {red.name.toLowerCase().includes("facebook") && (
+                      <FacebookIcon className="footer-social-svg" />
+                    )}
+                    <span className="footer-social-name">{red.name}</span>
+                  </a>
                 ))}
               </div>
             )}
